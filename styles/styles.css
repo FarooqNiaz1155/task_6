@@ -1,0 +1,13 @@
+body div .row #d3 #add-book-form #bu #bu2 {
+  font-size: 16px;
+  background-color: #008CBA;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+body div .row #d3 #add-book-form #bu :hover {
+  transform: scale(1.1);
+  transition: 0.4s;
+}/*# sourceMappingURL=styles.css.map */

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>OLMS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+  <div class="container" id="cont">
+    <h1 id="h">OLMS</h1>
+    <div class="row">
+      <div class="col-md-4">
+        <h3>Book List</h3>
+        <ul id="book-list"></ul>
+      </div>
+      <div class="col-md-4" id="d3">
+        <h3>Add New Book</h3>
+        <form id="add-book-form">
+          <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" class="form-control" id="title" placeholder="Enter the book title">
+          </div>
+          <div class="form-group">
+            <label for="author">Author:</label>
+            <input type="text" class="form-control" id="author" placeholder="Enter the book author">
+          </div>
+          <div class="form-group">
+            <label for="isbn">ISBN:</label>
+            <input type="number" class="form-control" id="isbn" placeholder="Enter the book ISBN">
+          </div>
+          <div id="bu">
+          <button type="submit" id="bu2"  >Add Book</button>
+        </div>
+        </form>
+      </div>
+      <div class="col-md-4">
+        <h3>Search for Books</h3>
+        <input type="text" class="form-control" id="search-input" placeholder="Enter the book title or author">
+        <ul id="search-results"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"></script>
+  <script>
+ // Book list data (you can initialize this with your existing book data)
+ var j=4;
+ var books = [{author:"Hacking: The Art of Exploitation",title:"Jon Erickson",isbn:"9781593271442"},
+ {author:"Introduction to the Theory of Computation",title:"Sipser, Michael",isbn:"9780534950972"},
+ {author:"Eloquent JavaScript: A Modern Introduction to Programming",title:"Haverbeke, Marijn",isbn:"9781593275846"} 
+      // Add more books as needed
+    ];
+
+    // Display the initial book list
+    var bookList = document.getElementById("book-list");
+    displayBooks(books, bookList);
+
+    // Function to display books in the list
+    function displayBooks(books, target) {
+      target.innerHTML = ""; // Clear the list
+      books.forEach(function(book) {
+        var bookItem = document.createElement("li");
+        bookItem.textContent = book.title + " | " + book.author + " | " + book.isbn;
+        target.appendChild(bookItem);
+      });
+    }
+
+    // Function to filter books based on search input
+    function filterBooks(searchText) {
+      searchText = searchText.toLowerCase();
+      var filteredBooks = books.filter(function(book) {
+        return (
+          book.title.toLowerCase().includes(searchText) ||
+          book.author.toLowerCase().includes(searchText)
+        );
+      });
+      return filteredBooks;
+    }
+
+
+    
+    // Prevent duplicate entries when adding new books
+    function isDuplicateBook(title, author, isbn) {
+      var bookList = document.getElementById("book-list");
+
+      for (var i = 0; i < bookList.children.length; i++) {
+        var book = bookList.children[i];
+        var bookInfo = book.textContent;
+
+        // Split the book information into title, author, and ISBN
+        var bookInfoArray = bookInfo.split(' | ');
+        var existingTitle = bookInfoArray[0];
+        var existingAuthor = bookInfoArray[1];
+        var existingISBN = bookInfoArray[2];
+
+        // Compare the new book information with existing books
+        if (
+          title === existingTitle &&
+          author === existingAuthor &&
+          isbn === existingISBN
+        ) {
+          // The book is a duplicate
+          return true;
+        }
+      }
+
+      // If no duplicates are found
+      return false;
+    }
+
+    // Function to add a book to the list
+    function addBookToList(title, author, isbn) {
+      var bookList = document.getElementById("book-list");
+      var bookItem = document.createElement("li");
+      bookItem.textContent = title + " | " + author + " | " + isbn;
+      bookList.appendChild(bookItem);
+      books[j]={ title: title, author: author, isbn: isbn };
+      j=j+1;
+
+    }
+    
+
+    // Event listener for form submission
+    document.getElementById("add-book-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      var title = document.getElementById("title").value;
+      var author = document.getElementById("author").value;
+      var isbn = document.getElementById("isbn").value;
+
+      if (!isDuplicateBook(title, author, isbn)) {
+        addBookToList(title, author, isbn);
+      } else {
+        alert("This book already exists in the list.");
+      }
+
+      // Clear the form inputs
+      document.getElementById("title").value = "";
+      document.getElementById("author").value = "";
+      document.getElementById("isbn").value = "";
+    });
+    document.getElementById("search-input").addEventListener("input", function () {
+      var searchText = this.value;
+      var searchResults = filterBooks(searchText);
+      displayBooks(searchResults, document.getElementById("search-results"));
+    });
+  </script>
+</body>
+</html>
